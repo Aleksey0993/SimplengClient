@@ -99,5 +99,11 @@
             icon: 'mdi-image',
             to:'/profile' },
         ] }),
+  mounted(){
+    if(localStorage.getItem('token')){
+        this.$store.dispatch('checkAuth')
+    }
+  }
+
   }
 </script>

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-
+import store from '@/store/index'
 Vue.use(VueRouter)
 
 const routes = [
@@ -21,27 +21,27 @@ const routes = [
     component: () => import('../views/ProfileView.vue')
   },
   {
-    path: '/register',
+    path: '/auth/register',
     name: 'register',
     component: () => import('../views/RegisterView.vue')
   },
   {
-    path: '/login',
+    path: '/auth/login',
     name: 'login',
     component: () => import('../views/LoginView.vue')
   },
   {
-    path: '/activate/:activation_token',
+    path: '/auth/activate/:activation_token',
     name: 'activate',
     component: () => import('../views/ActivationView.vue')
   },
   {
-    path: '/forgot',
+    path: '/auth/forgot',
     name: 'forgot',
     component: () => import('../views/ForgotView.vue')
   },
   {
-    path: '/reset/:access_token',
+    path: '/auth/reset/:access_token',
     name: 'reset',
     component: () => import('../views/ResetView.vue')
   }
@@ -52,5 +52,12 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
+
+router.beforeEach((to, from, next) => {
+  console.log('beforeEach', store.state.isAuth)
+  if (to.name === 'profile' && !store.state.isAuth) next({ name: 'login' })
+  else next()
+})
+
 
 export default router
