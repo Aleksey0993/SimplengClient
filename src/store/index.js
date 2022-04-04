@@ -30,6 +30,21 @@ export default new Vuex.Store({
      registerError(state, response){
        state.err = response.data.msg
      },
+     
+     forgotPasswordSuccess(state,response){
+      console.log(response)
+      state.success = response.data.msg
+     },
+     forgotPasswordError(state, response){
+       state.err = response.data.msg
+     },
+     resetPasswordSuccess(state,response){
+      console.log(response)
+      state.success = response.data.msg
+     },
+     resetPasswordError(state, response){
+       state.err = response.data.msg
+     },
      activateSuccess(state,response){
       console.log(response)
       state.success = response.data.msg
@@ -136,6 +151,32 @@ export default new Vuex.Store({
 
     } catch (error) {
       console.log(error.response?.data?.message)
+    }
+  },
+  async forgotPassword({commit}, email){
+    try {
+      commit('setLoading',true)
+      const response = await AuthService.forgotPassword(email)
+      commit('forgotPasswordSuccess', response)
+    } catch (err) {
+      commit('forgotPasswordError', err.response)
+    }finally{
+      commit('setLoading',false)
+    }
+  },
+  async resetPassword({commit}, {password, access_token}){
+    try {
+      commit('setLoading', true)
+      localStorage.setItem('token', access_token)
+      console.log('Новый пароль --------')
+      console.log(password)
+      const response = await AuthService.resetPassword(password)
+      commit('resetPasswordSuccess', response)
+    } catch (err) {
+     commit('resetPasswordError', err.response)      
+    }finally{
+     commit('setLoading', false)
+   //  localStorage.removeItem('token')
     }
   }
 
