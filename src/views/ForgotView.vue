@@ -54,14 +54,14 @@ export default {
      }
  },
  computed:{
-     ...mapState({
+     ...mapState('auth',{
          isLoading: state => state.isLoading,
            err: state => state.err,
           success: state => state.success
      })
  },
  methods:{
-    ...mapActions(['forgotPassword']) 
+    ...mapActions('auth',['forgotPassword']) 
  }
 }
 </script>

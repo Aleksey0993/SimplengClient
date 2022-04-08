@@ -2,7 +2,9 @@
   <v-app id="inspire">
       <v-navigation-drawer 
        v-model="drawer"
-       
+      color="rgba(51, 153, 255, 0.5)"
+     dark
+     
        app>
       <v-list-item>
         <v-list-item-content>
@@ -71,9 +73,8 @@
       
       color="primary"
       dark
-      prominent
-         
-      
+      dense
+      elevate-on-scroll
     >
     
 
@@ -106,14 +107,15 @@
 </template>
 
 <script>
-import {mapState} from 'vuex'
+import {mapState, mapActions} from 'vuex'
+
   export default {
     components:{
      
     },
     data: () => ({ 
       drawer: null,
-      title:'',
+      title:'Главная',
       items: [
           { title: 'Главная', 
             icon: 'mdi-mastodon',
@@ -156,15 +158,22 @@ import {mapState} from 'vuex'
        }
          },
         computed:{
-          ...mapState({
+          ...mapState('auth',{
             isAuth: state => state.isAuth
           })
         },
-     
+     methods:{
+       ...mapActions('auth',['setFingerPrint','checkAuth']
+       
+       ),
+    
+     },
   mounted(){
     if(localStorage.getItem('token')){
-        this.$store.dispatch('checkAuth')
+        this.checkAuth()
     }
+    this.setFingerPrint()
+     
   }
 
   }

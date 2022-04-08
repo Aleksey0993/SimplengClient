@@ -56,14 +56,14 @@ export default {
      }
  },
  computed:{
-     ...mapState({
+     ...mapState('auth',{
          isLoading: state => state.isLoading,
            err: state => state.err,
           success: state => state.success
      })
  },
  methods:{
-    ...mapActions(['resetPassword']) 
+    ...mapActions('auth',['resetPassword']) 
  },
  mounted(){
      console.log(this.$route.params.access_token)

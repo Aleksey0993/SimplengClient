@@ -7,7 +7,9 @@ export default class FingerPrint{
         try {
             const fp = await fpPromise
             const result = await fp.get()
+            console.log('visitor', result.visitorId)
             return result.visitorId
+            
         } catch (error) {
             console.log(error)
         }

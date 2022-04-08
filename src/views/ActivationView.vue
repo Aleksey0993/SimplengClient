@@ -19,14 +19,14 @@
 import {mapState, mapActions} from 'vuex'
 export default {
  computed:{
-      ...mapState({
+      ...mapState('auth',{
           isLoading: state => state.isLoading,
           err: state => state.err,
           success: state => state.success
       })
   },
   methods:{
-      ...mapActions({
+      ...mapActions('auth',{
           activation: 'activation'
       }),
   },

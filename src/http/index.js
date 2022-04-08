@@ -1,5 +1,5 @@
 import axios from "axios";
-import FingerPrint from "@/service/FingerPrint";
+import store from '@/store/index'
 export const API_URL = "http://localhost:5000/api"
 import $refreshRequest from "./apirequest";
 const $api = axios.create({
@@ -21,9 +21,8 @@ $api.interceptors.response.use((config)=>{
     if(error.response.status == 401 && error.config && !error.config._isRetry){
         originalRequest._isRetry = true
         try {
-            const fingerprint = await FingerPrint.getUserID() 
-            
-            const response = await $refreshRequest.post(`${API_URL}/refresh`, {fingerprint:fingerprint})
+            console.log('401 finngerprint - ', store.state.auth.fingerprint)
+           const response = await $refreshRequest.post(`${API_URL}/refresh`, {fingerprint:store.state.auth.fingerprint})
             console.log('refreshtoken')
             localStorage.getItem('token',response.data.accessToken)
             return $api.request(originalRequest) 
