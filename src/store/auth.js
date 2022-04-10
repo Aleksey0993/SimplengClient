@@ -27,7 +27,9 @@ import $refreshRequest from '@/http'
       state.success = response.data.msg
      },
      registerError(state, response){
-       state.err = response.data.msg
+       state.err = response.reduce((err, item)=>{
+         return err + item.msg
+       },'')
      },
      
      forgotPasswordSuccess(state,response){
@@ -93,9 +95,10 @@ import $refreshRequest from '@/http'
        const response = await AuthService.registration(email,password)
        
        commit('registerSuccess', response)
-
+       
       } catch (err) {
-        commit('registerError',err.response)
+        console.log('ответ от сервера error - ', err.response.data.errors)
+        commit('registerError',err.response.data.errors)
         console.log(err.response.data.msg)
        
       } finally{
