@@ -22,7 +22,7 @@ $api.interceptors.response.use((config)=>{
         originalRequest._isRetry = true
         try {
             console.log('401 finngerprint - ', store.state.auth.fingerprint)
-           const response = await $refreshRequest.post(`${API_URL}/refresh`, {fingerprint:store.state.auth.fingerprint})
+           const response = await $refreshRequest.post(`${API_URL}/auth/refresh`, {fingerprint:store.state.auth.fingerprint})
             console.log('refreshtoken')
             localStorage.getItem('token',response.data.accessToken)
             return $api.request(originalRequest) 

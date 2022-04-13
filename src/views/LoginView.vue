@@ -1,94 +1,74 @@
 <template>
-  <div
   
-  >
-      <v-form 
-       class="mt-8"
-       >
-          <v-container
-           class="register-container"
-          >
-           <v-col
-             cols="12"
-             xl="2"
-             lg="6"
-             md="6"
-             offset-md="3"
-             sm="8"
-             offset-sm="2"
-           >
-                <v-text-field
-            outlined
-            label="Email"
-            prepend-inner-icon="mdi-at"
-            :disabled='isLoading'
-            v-model="email"
-          ></v-text-field> 
-           </v-col>
-           <v-col
-             cols="12"
-             xl="2"
-             lg="6"
-             md="6"
-             offset-md="3"
-             sm="8"
-             offset-sm="2"
-           >
-                <v-text-field
-            outlined
-            label="Password"
-            prepend-inner-icon="mdi-lock"
-            :disabled='isLoading'
-            v-model="password"
-          ></v-text-field> 
-           </v-col>
-        
-               <v-btn
-                class="btn"
-                :disabled='isLoading'
-                color="primary"
-                @click="login({email,password})"
+
+
+ <v-container class="fill-height" fluid>
+        <v-row align="center" justify="center" dense>
+          <v-col cols="12" sm="8" md="4" lg="4">
+            <v-card elevation="0.5" class="pa-2">
+              <a href="https://edu-fedorae.netlify.app" name="Fedorae Education" title="Fedorae Education" target="_blank">
+                <v-img src="@/assets/logo.png" alt="Fedorae Education Log" contain height="200"></v-img>
+              </a>
+              <v-card-text>
+                <v-form>
+                   <v-text-field
+                       outlined
+                         label="Email"
+                         prepend-inner-icon="mdi-at"
+                         :disabled='isLoading'
+                         v-model="email"
+                         type="email">
+                         </v-text-field>
+                              <v-text-field
+                             outlined
+                              label="Password"
+                              prepend-inner-icon="mdi-lock"
+                              :disabled='isLoading'
+                              v-model="password"
+                              type="password">
+                              </v-text-field>  
+                        
+                  
+                    <v-btn
+                     
+                      :disabled='isLoading'
+                       color="primary"
+                       x-large block
+                         @click="login({email,password})"
                 
-               >
+                         >
                 Войти
                </v-btn>
-               <v-alert
-                   v-if='success'
-                    outlined
-                      color="purple"
-                      class="success"
-                    >
-                <div>{{success}}</div>
-               
-    </v-alert>
-       <v-alert
-                   v-if='err'
-                    outlined
-                      color="purple"
-                      class="err"
-                    >
-                <div>{{err}}</div>
-               
-    </v-alert>
-                     
-              <v-progress-circular v-if="isLoading"
-              class="progress"
-      :size="100"
-      color="primary"
-      indeterminate
-    ></v-progress-circular>
-          </v-container>
-         
 
-      </v-form>
+                  
+                </v-form>
+              </v-card-text>
+                 <v-card-actions>
+                   <p class="mx-auto">Нет аккаунта? <router-link :to="{ name: 'register' }" class="pl-2" >Зарегистрироваться</router-link> </p> 
+                  </v-card-actions>
+             <v-card-actions>
+                   <p class="mx-auto">Забыли пароль? <router-link :to="{ name: 'forgot' }" class="pl-2" >Сбросить пароль</router-link> </p> 
+              </v-card-actions>
+            </v-card>
+            <error-messages v-if="err" class="mt-3">{{err}}</error-messages>
+          </v-col>
+        </v-row>
+         <my-loader v-if="isLoading" />
+      </v-container>
 
-     
-  </div>
+  
 </template>
 
 <script>
-import {mapState, mapActions} from 'vuex'
+import MyLoader from '@/components/MyLoader'
+import ErrorMessages from '@/components/messages/ErrorMessages'
+import {mapState, mapActions, mapMutations} from 'vuex'
 export default {
+  components:{
+   ErrorMessages,
+   MyLoader,
+   
+  },
   data(){
       return{
           email:'',
@@ -99,14 +79,18 @@ export default {
       ...mapState('auth',{
           isLoading: state => state.isLoading,
           err: state => state.err,
-          success: state => state.success
+         
       })
   },
   methods:{
       ...mapActions('auth',{
           login: 'login'
       }),
+      ...mapMutations('auth',['clearMessage'])
 
+  },
+  beforeDestroy(){
+    this.clearMessage()
   }
 }
 </script>
@@ -115,6 +99,7 @@ export default {
  .register-container{
      position: relative;
  }
+
  .btn{
     position: absolute;
     left:50%;

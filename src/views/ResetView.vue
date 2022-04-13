@@ -1,6 +1,14 @@
 <template>
-  <v-container>
-        <v-text-field
+ <v-container class="fill-height" fluid>
+        <v-row align="center" justify="center" dense>
+          <v-col cols="12" sm="8" md="4" lg="4">
+            <v-card elevation="0.5" class="pa-2">
+              <a href="https://edu-fedorae.netlify.app" name="Fedorae Education" title="Fedorae Education" target="_blank">
+                <v-img src="@/assets/logo.png" alt="Fedorae Education Log" contain height="200"></v-img>
+              </a>
+              <v-card-text>
+                <v-form>
+                   <v-text-field
             outlined
             label="Password"
             prepend-inner-icon="mdi-lock"
@@ -8,47 +16,43 @@
             v-model="password"
           ></v-text-field> 
               <v-btn
-                class="btn"
-                :disabled='isLoading'
+               :disabled='isLoading'
                 color="primary"
                 @click="resetPassword({password, access_token})"
-                absolute
-                :style="{left:'50%', transform:'translateX(-50%)'}"
+               x-large block
                >
                 Далее
                </v-btn>
-            <v-progress-circular v-if="isLoading"
-                class="progress"
-                :size="100"
-                color="primary"
-                indeterminate
-                ></v-progress-circular>
-                 <v-alert
-                   v-if='success'
-                    outlined
-                      color="purple"
-                      class="success"
-                    >
-                <div>{{success}}</div>
+
+                  
+                </v-form>
+              </v-card-text>
                
-    </v-alert>
-       <v-alert
-                   v-if='err'
-                    outlined
-                      color="purple"
-                      class="err"
-                    >
-                <div>{{err}}</div>
-               
-    </v-alert>
+            </v-card>
+             <success-messages v-if="success" class="mt-3">{{success}}</success-messages>
+            <error-messages v-if="err" class="mt-3">{{err}}</error-messages>
+          </v-col>
+        </v-row>
+          
+     <my-loader v-if="isLoading" />
   </v-container>
+
   
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
-
+import { mapActions, mapState, mapMutations } from 'vuex'
+import MyLoader from '@/components/MyLoader'
+import SuccessMessages from '@/components/messages/SuccessMessages'
+import ErrorMessages from '@/components/messages/ErrorMessages'
 export default {
+   components:{
+   SuccessMessages,
+   ErrorMessages,
+   MyLoader,
+    
+   
+  },
  data(){
      return {
          password:'',
@@ -63,12 +67,16 @@ export default {
      })
  },
  methods:{
-    ...mapActions('auth',['resetPassword']) 
+    ...mapActions('auth',['resetPassword']),
+    ...mapMutations('auth', ['clearMessage']) 
  },
  mounted(){
-     console.log(this.$route.params.access_token)
+     
   this.access_token = this.$route.params.access_token
- }
+ },
+  beforeDestroy(){
+    this.clearMessage()
+  }
 }
 </script>
 

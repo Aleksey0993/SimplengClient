@@ -2,7 +2,7 @@
   <v-app id="inspire">
       <v-navigation-drawer 
        v-model="drawer"
-      color="rgba(51, 153, 255, 0.5)"
+      color="rgba(25, 118, 210, 0.8)"
      dark
      
        app>
@@ -22,7 +22,7 @@
       <v-list
         dense
         nav
-        v-if='!isAuth'
+       
       >
         <v-list-item
           v-for="item in items"
@@ -98,81 +98,129 @@
     </v-app-bar>
 
     <v-main>
+      <my-loader  v-if="isLoading"/>
       
-           <router-view></router-view>
+        <router-view></router-view>
       
+           
       
+       
     </v-main>
+    
   </v-app>
 </template>
 
 <script>
 import {mapState, mapActions} from 'vuex'
-
+import MyLoader from '@/components/MyLoader'
   export default {
-    components:{
-     
-    },
+     components:{
+  
+   MyLoader,
+    
+   
+  },
     data: () => ({ 
       drawer: null,
       title:'Главная',
       items: [
-          { title: 'Главная', 
+          { 
+            title: 'Главная', 
             icon: 'mdi-mastodon',
             to: '/',
-            name:'home' },
-          { title: 'О нас', 
+          },
+          { 
+            title: 'О нас', 
             icon: 'mdi-image',
             to:'/about',
-            name:'about' },
-           { title: 'Личный кабинет', 
+          },
+           { 
+            title: 'Личный кабинет', 
             icon: 'mdi-image',
             to:'/profile' ,
-            name:'profile'},
+            },
+            
         ],
           items2: [
+          { title: 'Грамматика', 
+            icon: 'mdi-image',
+            to:'/grammar' },
+          { title: 'Аудирование', 
+            icon: 'mdi-image',
+            to:'/listening' },
+        ],
+
+         menuPages: [
           { title: 'Главная', 
-            icon: 'mdi-mastodon',
-            to: '/',
-            name:'home' },
+            name:'home' 
+          },
           { title: 'О Нас', 
-            icon: 'mdi-image',
-            to:'/about',
-            name:'about' },
-           { title: 'Личный кабинет', 
-            icon: 'mdi-image',
-            to:'/profile',
-            name:'profile' },
-             { title: 'Теория', 
-            icon: 'mdi-image',
-            to:'/teory' },
-             { title: 'Практика', 
-            icon: 'mdi-image',
-            to:'/practic' },
-        ] }),
+            name:'about' 
+          },
+           { 
+             title: 'Личный кабинет', 
+             name:'profile' 
+            },
+             { 
+               title: 'Авторизация',
+               name: 'login' 
+            },
+              { 
+               title: 'Регистрация',
+               name: 'register' 
+            },
+              { 
+               title: 'Активация',
+               name: 'activate' 
+            },
+          
+            { 
+               title: 'Сброс пароля',
+               name: 'forgot' 
+            },
+              { 
+               title: 'Сброс пароля',
+               name: 'reset' 
+            },
+              { 
+               title: 'Грамматика',
+               name: 'grammar' 
+            },
+              { 
+               title: 'Аудирование',
+               name: 'listening' 
+            },
+        ], 
+        
+        
+        
+        }),
         watch: {
     $route(to) {
-      let path = this.items.filter((item)=>item.name === to.name)[0]
-      console.log(path)
+     
+      let path = this.menuPages.filter((item)=>item.name === to.name)[0]
+      
        this.title = path.title
        }
          },
         computed:{
           ...mapState('auth',{
-            isAuth: state => state.isAuth
+            isAuth: state => state.isAuth,
+            isLoading: state => state.isLoading,
           })
         },
      methods:{
-       ...mapActions('auth',['setFingerPrint','checkAuth']
+       ...mapActions('auth',['setFingerPrint']
        
        ),
     
      },
-  mounted(){
-    if(localStorage.getItem('token')){
-        this.checkAuth()
-    }
-    this.setFingerPrint()
+  async mounted(){
+    await this.setFingerPrint()
+    // if(localStorage.getItem('token')){
+    //     this.checkAuth()
+    // }
+    
      
   }
 

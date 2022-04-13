@@ -44,6 +44,16 @@ const routes = [
     path: '/auth/reset/:access_token',
     name: 'reset',
     component: () => import('../views/ResetView.vue')
+  },
+  {
+    path: '/grammar',
+    name: 'grammar',
+    component: () => import('../views/GrammarView.vue')
+  },
+  {
+    path: '/listening',
+    name: 'listening',
+    component: () => import('../views/ListeningView.vue')
   }
 ]
 

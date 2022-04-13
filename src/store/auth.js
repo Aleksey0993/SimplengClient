@@ -2,14 +2,14 @@ import AuthService from '@/service/AuthService'
 import FingerPrint from '@/service/FingerPrint'
 import { jwtDecrypt } from '@/service/decodeToken'
 import router from '@/router/index'
-import { API_URL } from '@/http'
-import $refreshRequest from '@/http'
+// import { API_URL } from '@/http'
+// import $refreshRequest from '@/http'
 //import jwtDecrypt from '@/service/decodeToken'
 
 
 
   const state = {
-    fingerprint:'',
+    fingerprint:'222',
     isLoading:false,
     isAuth:false,
     user:null,
@@ -23,7 +23,7 @@ import $refreshRequest from '@/http'
       state.isLoading = data
     },
     registerSuccess(state,response){
-      console.log(response)
+      
       state.success = response.data.msg
      },
      registerError(state, response){
@@ -53,7 +53,7 @@ import $refreshRequest from '@/http'
      activateError(state, response){
        state.err = response.data.msg
      },
-     clearAlert(state){
+     clearMessage(state){
        state.success = ''
        state.err = ''
      },
@@ -66,15 +66,16 @@ import $refreshRequest from '@/http'
       router.push({name:'profile'})
      },
      loginError(state, response){
-      state.err = response.data.msg
+       
+      state.err = response[0].msg
     },
-    checkAuthSuccess(state, response){
-      console.log(response.data.accessToken)
-      localStorage.setItem('token', response.data.accessToken)
-      state.user = jwtDecrypt(localStorage.getItem('token'))
-      state.isAuth = true
-      router.push({name:'profile'})
-      },
+    // checkAuthSuccess(state, response){
+      
+    //   localStorage.setItem('token', response.data.accessToken)
+    //   state.user = jwtDecrypt(localStorage.getItem('token'))
+    //   state.isAuth = true
+    //   router.push({name:'profile'})
+    //   },
       logoutSuccess(state){
         localStorage.removeItem('token')
         
@@ -91,15 +92,15 @@ import $refreshRequest from '@/http'
     async registration({commit}, {email, password}){
       try {
       commit('setLoading', true)
-      commit('clearAlert')
+      commit('clearMessage')
        const response = await AuthService.registration(email,password)
        
        commit('registerSuccess', response)
        
       } catch (err) {
-        console.log('ответ от сервера error - ', err.response.data.errors)
+        
         commit('registerError',err.response.data.errors)
-        console.log(err.response.data.msg)
+      
        
       } finally{
      commit('setLoading', false)
@@ -109,7 +110,7 @@ import $refreshRequest from '@/http'
    async activation({commit}, activation_token){
      try {
       commit('setLoading', true)
-     
+      commit('clearMessage')
       const response = await AuthService.activation(activation_token)
        
        commit('activateSuccess', response)
@@ -120,34 +121,39 @@ import $refreshRequest from '@/http'
       commit('setLoading', false)
      }
    },
-   async login({commit}, {email, password}){
+   async login({commit,state}, {email, password}){
      try {
        commit('setLoading', true)
-       const fingerprint = await FingerPrint.getUserID() 
-       const response = await AuthService.login(email,password,fingerprint)
+       commit('clearMessage')
+       
+       const response = await AuthService.login(email,password,state.fingerprint)
+       console.log('ответ с ошибкой', response)
        commit('loginSuccess', response)
      } catch (err) {
-       commit('loginError', err.response)
+       commit('loginError', err.response.data.errors)
      } finally{
        commit('setLoading', false)
      }
    },
 
-   async checkAuth({commit}){
-    commit('setLoading', true)
-    try {
-      const fingerprint = await FingerPrint.getUserID() 
+  //  async checkAuth({commit, state}){
+   
+  //   try {
+  //     commit('setLoading', true)
      
       
-      const response = await $refreshRequest.post(`${API_URL}/auth/refresh`, {fingerprint: fingerprint})
-      commit('checkAuthSuccess', response)
+  //     const response = await $refreshRequest.post(`${API_URL}/auth/refresh`, {fingerprint: state.fingerprint})
+  //     console.log('response - ',response)
+  //     commit('checkAuthSuccess', response)
+     
+     
 
-    } catch (error) {
-      console.log(error.response?.data?.message)
-    } finally{
-      commit('setLoading', false)
-    }
-  },
+  //   } catch (error) {
+  //     console.log(error.response?.data?.message)
+  //   } finally{
+  //     commit('setLoading', false)
+  //   }
+  // },
   async logout({commit}){
     try {
       //const response = await AuthService.logout()
@@ -161,6 +167,7 @@ import $refreshRequest from '@/http'
   async forgotPassword({commit}, email){
     try {
       commit('setLoading',true)
+      commit('clearMessage')
       const response = await AuthService.forgotPassword(email)
       commit('forgotPasswordSuccess', response)
     } catch (err) {
@@ -172,6 +179,7 @@ import $refreshRequest from '@/http'
   async resetPassword({commit}, {password, access_token}){
     try {
       commit('setLoading', true)
+      commit('clearMessage')
       localStorage.setItem('token', access_token)
       console.log('Новый пароль --------')
       console.log(password)
