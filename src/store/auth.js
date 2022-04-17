@@ -159,6 +159,7 @@ import jwt_decode from 'jwt-decode'
   
   async setFingerPrint({commit}){
     const fingerprint = await FingerPrint.getUserID()
+    console.log('перезагрузка')
     commit('setFingerPrint', fingerprint)
      }
   }

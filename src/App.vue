@@ -1,35 +1,22 @@
 <template>
   <v-app id="inspire">
-      <v-navigation-drawer 
-       v-model="drawer"
+    <v-navigation-drawer
+      v-model="drawer"
       color="rgba(25, 118, 210, 0.8)"
-     dark
-     
-       app>
+      dark
+      app
+    >
       <v-list-item>
         <v-list-item-content>
-          <v-list-item-title class="text-h6">
-            SimplEng
-          </v-list-item-title>
-          <v-list-item-subtitle>
-            Best todo
-          </v-list-item-subtitle>
+          <v-list-item-title class="text-h5"> SimplEng </v-list-item-title>
+          <v-list-item-subtitle> Best todo </v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
 
       <v-divider></v-divider>
 
-      <v-list
-        dense
-        nav
-       
-      >
-        <v-list-item
-          v-for="item in items"
-          :key="item.title"
-          :to="item.to"
-          link
-        >
+      <v-list dense nav>
+        <v-list-item v-for="item in items" :key="item.title" :to="item.to" link>
           <v-list-item-icon>
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-icon>
@@ -38,15 +25,9 @@
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-divider
-        class="mt-4"></v-divider>
-          
+        <v-divider class="mt-4"></v-divider>
       </v-list>
-       <v-list
-        dense
-        nav
-        v-if='isAuth'
-      >
+      <v-list dense nav v-if="isAuth">
         <v-list-item
           v-for="item in items2"
           :key="item.title"
@@ -61,26 +42,14 @@
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-divider
-        class="mt-4"></v-divider>
-          
+        <v-divider class="mt-4"></v-divider>
       </v-list>
     </v-navigation-drawer>
 
-   
-     <v-app-bar
-      app
-      
-      color="primary"
-      dark
-      dense
-      elevate-on-scroll
-    >
-    
-
+    <v-app-bar app color="primary" dark dense elevate-on-scroll>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
-      <v-app-bar-title>{{title}}</v-app-bar-title>
+      <v-app-bar-title>{{ title }}</v-app-bar-title>
 
       <v-spacer></v-spacer>
 
@@ -98,134 +67,108 @@
     </v-app-bar>
 
     <v-main>
-      <my-loader  v-if="isLoading"/>
-      
-        <router-view></router-view>
-      
-           
-      
-       
+      <my-loader v-if="isLoading" />
+
+      <router-view></router-view>
     </v-main>
-    
   </v-app>
 </template>
 
 <script>
-import {mapState, mapActions} from 'vuex'
-import MyLoader from '@/components/MyLoader'
-  export default {
-     components:{
-  
-   MyLoader,
-    
-   
+import { mapState, mapActions } from "vuex";
+import MyLoader from "@/components/MyLoader";
+export default {
+  components: {
+    MyLoader,
   },
-    data: () => ({ 
-      drawer: null,
-      title:'Главная',
-      items: [
-          { 
-            title: 'Главная', 
-            icon: 'mdi-mastodon',
-            to: '/',
-          },
-          { 
-            title: 'О нас', 
-            icon: 'mdi-image',
-            to:'/about',
-          },
-           { 
-            title: 'Личный кабинет', 
-            icon: 'mdi-image',
-            to:'/profile' ,
-            },
-            
-        ],
-          items2: [
-          { title: 'Грамматика', 
-            icon: 'mdi-image',
-            to:'/grammar' },
-          { title: 'Аудирование', 
-            icon: 'mdi-image',
-            to:'/listening' },
-        ],
+  data: () => ({
+    drawer: null,
+    title: "Главная",
+    items: [
+      {
+        title: "Главная",
+        icon: "mdi-mastodon",
+        to: "/",
+      },
+      {
+        title: "О нас",
+        icon: "mdi-image",
+        to: "/about",
+      },
+      {
+        title: "Личный кабинет",
+        icon: "mdi-image",
+        to: "/profile",
+      },
+    ],
+    items2: [
+      { title: "Грамматика", icon: "mdi-image", to: "/grammar" },
+      { title: "Аудирование", icon: "mdi-image", to: "/listening" },
+    ],
 
-         menuPages: [
-          { title: 'Главная', 
-            name:'home' 
-          },
-          { title: 'О Нас', 
-            name:'about' 
-          },
-           { 
-             title: 'Личный кабинет', 
-             name:'profile' 
-            },
-             { 
-               title: 'Авторизация',
-               name: 'login' 
-            },
-              { 
-               title: 'Регистрация',
-               name: 'register' 
-            },
-              { 
-               title: 'Активация',
-               name: 'activate' 
-            },
-          
-            { 
-               title: 'Сброс пароля',
-               name: 'forgot' 
-            },
-              { 
-               title: 'Сброс пароля',
-               name: 'reset' 
-            },
-              { 
-               title: 'Грамматика',
-               name: 'grammar' 
-            },
-              { 
-               title: 'Аудирование',
-               name: 'listening' 
-            },
-              { 
-               title: 'Ошибка',
-               name: 'forbidden' 
-            },
-              { 
-               title: 'Ошибка',
-               name: '404' 
-            },
-        ], 
-        
-        
-        
-        }),
-        watch: {
+    menuPages: [
+      { title: "Главная", name: "home" },
+      { title: "О Нас", name: "about" },
+      {
+        title: "Личный кабинет",
+        name: "profile",
+      },
+      {
+        title: "Авторизация",
+        name: "login",
+      },
+      {
+        title: "Регистрация",
+        name: "register",
+      },
+      {
+        title: "Активация",
+        name: "activate",
+      },
+
+      {
+        title: "Сброс пароля",
+        name: "forgot",
+      },
+      {
+        title: "Сброс пароля",
+        name: "reset",
+      },
+      {
+        title: "Грамматика",
+        name: "grammar",
+      },
+      {
+        title: "Аудирование",
+        name: "listening",
+      },
+      {
+        title: "Ошибка",
+        name: "forbidden",
+      },
+      {
+        title: "Ошибка",
+        name: "404",
+      },
+    ],
+  }),
+  watch: {
     $route(to) {
-     
-      let path = this.menuPages.filter((item)=>item.name === to.name)[0]
-      
-       this.title = path.title
-       }
-         },
-        computed:{
-          ...mapState('auth',{
-            isAuth: state => state.isAuth,
-            isLoading: state => state.isLoading,
-          })
-        },
-     methods:{
-       ...mapActions('auth',['setFingerPrint']
-       
-       ),
-    
-     },
-   mounted(){
-    this.setFingerPrint()
-  }
-
-  }
+      let path = this.menuPages.filter((item) => item.name === to.name)[0];
+      this.title = path.title;
+    },
+  },
+  computed: {
+    ...mapState("auth", {
+      isAuth: (state) => state.isAuth,
+      isLoading: (state) => state.isLoading,
+    }),
+  },
+  methods: {
+    ...mapActions("auth", ["setFingerPrint"]),
+  },
+  mounted() {
+    this.setFingerPrint();
+  },
+};
 </script>
