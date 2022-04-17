@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate';
 import sharedMutations from 'vuex-shared-mutations';
 import auth from './auth'
+import grammar from './grammar'
 Vue.use(Vuex)
 
 const dataState = createPersistedState({
@@ -15,7 +16,8 @@ const sharedTab = sharedMutations({ predicate: ['auth/loginSuccess', 'auth/logou
 export default new Vuex.Store({
 
   modules: {
-      auth
+      auth,
+      grammar
   },
   plugins: [dataState,sharedTab]
 })

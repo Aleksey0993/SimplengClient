@@ -11,14 +11,14 @@ export default class AuthService{
         return $api.post('/auth/activation', {activation_token})
     }
     static async logout(){
-        return $api.post('/auth/logout')
+        return $api.get('/auth/logout')
     }
     static async forgotPassword(email){
         return $api.post('/auth/forgot',{email})
     }
-    static async resetPassword(password){
-        return $api.post('/auth/reset',{password})
+    static async resetPassword(password, reset_password_token){
+        return $api.post('/auth/reset',{password, reset_password_token})
     }
-    
+  
     
 }

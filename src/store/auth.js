@@ -2,14 +2,9 @@ import AuthService from '@/service/AuthService'
 import FingerPrint from '@/service/FingerPrint'
 import { jwtDecrypt } from '@/service/decodeToken'
 import router from '@/router/index'
-// import { API_URL } from '@/http'
-// import $refreshRequest from '@/http'
-//import jwtDecrypt from '@/service/decodeToken'
-
-
 
   const state = {
-    fingerprint:'222',
+    fingerprint:'',
     isLoading:false,
     isAuth:false,
     user:null,
@@ -19,73 +14,56 @@ import router from '@/router/index'
  const getters= {
   }
  const mutations= {
-    setLoading(state, data){
-      state.isLoading = data
+    setLoading(state, payload){
+      state.isLoading = payload
     },
-    registerSuccess(state,response){
-      
-      state.success = response.data.msg
+    registerSuccess(state,payload){
+       state.success = payload
      },
-     registerError(state, response){
-       state.err = response.reduce((err, item)=>{
-         return err + item.msg
-       },'')
+     registerError(state, payload){
+       state.err = payload
      },
-     
-     forgotPasswordSuccess(state,response){
-      console.log(response)
-      state.success = response.data.msg
+     activateSuccess(state,payload){
+      state.success = payload
      },
-     forgotPasswordError(state, response){
-       state.err = response.data.msg
+     activateError(state, payload){
+       state.err = payload
      },
-     resetPasswordSuccess(state,response){
-      console.log(response)
-      state.success = response.data.msg
+     loginSuccess(state, payload){
+      localStorage.setItem('token', payload.accessToken)
+      state.user = jwtDecrypt(localStorage.getItem('token'))
+      state.isAuth = true
+      router.push({name:'profile'})
      },
-     resetPasswordError(state, response){
-       state.err = response.data.msg
+     loginError(state, payload){
+       state.err = payload
+    },
+     forgotPasswordSuccess(state,payload){
+       state.success = payload
      },
-     activateSuccess(state,response){
-      console.log(response)
-      state.success = response.data.msg
+     forgotPasswordError(state, payload){
+      state.err = payload
      },
-     activateError(state, response){
-       state.err = response.data.msg
+     resetPasswordSuccess(state,payload){
+       state.success = payload
      },
+     resetPasswordError(state, payload){
+       state.err = payload
+     },
+    
      clearMessage(state){
        state.success = ''
        state.err = ''
      },
 
-
-     loginSuccess(state, response){
-      localStorage.setItem('token', response.data.accessToken)
-      state.user = jwtDecrypt(localStorage.getItem('token'))
-      state.isAuth = true
-      router.push({name:'profile'})
-     },
-     loginError(state, response){
-       
-      state.err = response[0].msg
-    },
-    // checkAuthSuccess(state, response){
-      
-    //   localStorage.setItem('token', response.data.accessToken)
-    //   state.user = jwtDecrypt(localStorage.getItem('token'))
-    //   state.isAuth = true
-    //   router.push({name:'profile'})
-    //   },
-      logoutSuccess(state){
+     logoutSuccess(state){
         localStorage.removeItem('token')
-        
         state.isAuth = false
-       // console.log(state.isAuth)
         state.user= null
         router.push({name:'login'})
       },
-      setFingerPrint(state, fingerprint){
-        state.fingerprint = fingerprint
+      setFingerPrint(state, payload){
+        state.fingerprint = payload
       }
   }
  const actions = {
@@ -94,15 +72,14 @@ import router from '@/router/index'
       commit('setLoading', true)
       commit('clearMessage')
        const response = await AuthService.registration(email,password)
+       commit('registerSuccess', response.data.msg)
+     
+      } 
+      catch (err) {
+       commit('registerError',err.response.data.msg)
        
-       commit('registerSuccess', response)
-       
-      } catch (err) {
-        
-        commit('registerError',err.response.data.errors)
-      
-       
-      } finally{
+      } 
+      finally {
      commit('setLoading', false)
     }
     },
@@ -112,10 +89,10 @@ import router from '@/router/index'
       commit('setLoading', true)
       commit('clearMessage')
       const response = await AuthService.activation(activation_token)
-       
-       commit('activateSuccess', response)
-     } catch (err) {
-      commit('activateError',err.response)
+       commit('activateSuccess', response.data.msg)
+     } 
+     catch (err) {
+      commit('activateError',err.response.data.msg)
      }
      finally{
       commit('setLoading', false)
@@ -125,80 +102,65 @@ import router from '@/router/index'
      try {
        commit('setLoading', true)
        commit('clearMessage')
-       
        const response = await AuthService.login(email,password,state.fingerprint)
-       console.log('ответ с ошибкой', response)
-       commit('loginSuccess', response)
-     } catch (err) {
-       commit('loginError', err.response.data.errors)
-     } finally{
+       commit('loginSuccess', response.data)
+     } 
+     catch (err) {
+       commit('loginError', err.response.data.msg)
+     } 
+     finally {
        commit('setLoading', false)
      }
    },
-
-  //  async checkAuth({commit, state}){
-   
-  //   try {
-  //     commit('setLoading', true)
-     
-      
-  //     const response = await $refreshRequest.post(`${API_URL}/auth/refresh`, {fingerprint: state.fingerprint})
-  //     console.log('response - ',response)
-  //     commit('checkAuthSuccess', response)
-     
-     
-
-  //   } catch (error) {
-  //     console.log(error.response?.data?.message)
-  //   } finally{
-  //     commit('setLoading', false)
-  //   }
-  // },
-  async logout({commit}){
-    try {
-      //const response = await AuthService.logout()
-       await AuthService.logout()
-      commit('logoutSuccess')
-
-    } catch (error) {
-      console.log(error.response?.data?.message)
-    }
-  },
-  async forgotPassword({commit}, email){
+   async forgotPassword({commit}, email){
     try {
       commit('setLoading',true)
       commit('clearMessage')
       const response = await AuthService.forgotPassword(email)
-      commit('forgotPasswordSuccess', response)
-    } catch (err) {
-      commit('forgotPasswordError', err.response)
-    }finally{
+      commit('forgotPasswordSuccess', response.data.msg)
+    } 
+    catch (err) {
+      commit('forgotPasswordError', err.response.data.msg)
+    }
+    finally{
       commit('setLoading',false)
     }
   },
-  async resetPassword({commit}, {password, access_token}){
+  async resetPassword({commit}, {password, reset_password_token}){
     try {
       commit('setLoading', true)
       commit('clearMessage')
-      localStorage.setItem('token', access_token)
-      console.log('Новый пароль --------')
-      console.log(password)
-      const response = await AuthService.resetPassword(password)
-      commit('resetPasswordSuccess', response)
+     // localStorage.setItem('token', access_token)
+      const response = await AuthService.resetPassword(password, reset_password_token)
+      commit('resetPasswordSuccess', response.data.msg)
     } catch (err) {
-     commit('resetPasswordError', err.response)      
+       commit('resetPasswordError', err.response.data.msg)
+         
     }finally{
      commit('setLoading', false)
    //  localStorage.removeItem('token')
     }
   },
+  
+  async logout({commit}){
+    try {
+      commit('setLoading', true)
+      await AuthService.logout()
+      commit('logoutSuccess')
+     
+    } catch (err) {
+        console.log(err.message)
+      
+    } finally{
+      commit('setLoading', false)
+    }
+  },
+ 
+  
   async setFingerPrint({commit}){
-    
     const fingerprint = await FingerPrint.getUserID()
-    await commit('setFingerPrint', fingerprint)
-  }
-
-
+    commit('setFingerPrint', fingerprint)
+     }
   }
   
   export default {

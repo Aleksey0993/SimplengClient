@@ -1,23 +1,33 @@
 <template>
   <div>
-      <form >
-        <input type="text" v-model="text">
-        <button @click="test">Проверка</button>
-      </form>
+     
+       <button @click="getUser">list of users</button>
+      <div 
+        v-for="user in users"
+        :key="user.id">
+           <p>{{user.email}} ---- {{user.role}}</p>
+        </div>
+
+
+        <button @click="addUser">Добавить пользователя</button>
   </div>
 </template>
 
 <script>
+import {mapActions, mapState} from 'vuex'
 export default {
  data(){
    return{
      text:''
    }
  },
+ computed:{
+   ...mapState('grammar',{
+     users: state => state.users
+   })
+ },
  methods:{
-   test(){
-     console.log('1111')
-   }
+  ...mapActions('grammar', ['getUser', 'addUser'])
  }
 }
 </script>

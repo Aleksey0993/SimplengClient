@@ -9,7 +9,7 @@
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="text-h6">
-            Todo app
+            SimplEng
           </v-list-item-title>
           <v-list-item-subtitle>
             Best todo
@@ -190,6 +190,14 @@ import MyLoader from '@/components/MyLoader'
                title: 'Аудирование',
                name: 'listening' 
             },
+              { 
+               title: 'Ошибка',
+               name: 'forbidden' 
+            },
+              { 
+               title: 'Ошибка',
+               name: '404' 
+            },
         ], 
         
         
@@ -215,13 +223,8 @@ import MyLoader from '@/components/MyLoader'
        ),
     
      },
-  async mounted(){
-    await this.setFingerPrint()
-    // if(localStorage.getItem('token')){
-    //     this.checkAuth()
-    // }
-    
-     
+   mounted(){
+    this.setFingerPrint()
   }
 
   }

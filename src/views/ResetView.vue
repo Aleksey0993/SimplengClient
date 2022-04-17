@@ -18,7 +18,7 @@
               <v-btn
                :disabled='isLoading'
                 color="primary"
-                @click="resetPassword({password, access_token})"
+                @click="resetPassword({password, reset_password_token})"
                x-large block
                >
                 Далее
@@ -56,7 +56,7 @@ export default {
  data(){
      return {
          password:'',
-         access_token:''
+         reset_password_token:''
      }
  },
  computed:{
@@ -72,7 +72,7 @@ export default {
  },
  mounted(){
      
-  this.access_token = this.$route.params.access_token
+  this.reset_password_token = this.$route.params.reset_password_token
  },
   beforeDestroy(){
     this.clearMessage()
