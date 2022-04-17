@@ -1,8 +1,8 @@
 import AuthService from '@/service/AuthService'
 import FingerPrint from '@/service/FingerPrint'
-import { jwtDecrypt } from '@/service/decodeToken'
+//import { jwtDecrypt } from '@/service/decodeToken'
 import router from '@/router/index'
-
+import jwt_decode from 'jwt-decode'
   const state = {
     fingerprint:'',
     isLoading:false,
@@ -31,7 +31,7 @@ import router from '@/router/index'
      },
      loginSuccess(state, payload){
       localStorage.setItem('token', payload.accessToken)
-      state.user = jwtDecrypt(localStorage.getItem('token'))
+      state.user =  jwt_decode(localStorage.getItem('token')) //  jwtDecrypt(localStorage.getItem('token'))
       state.isAuth = true
       router.push({name:'profile'})
      },
