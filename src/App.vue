@@ -53,16 +53,9 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn icon>
-        <v-icon>mdi-magnify</v-icon>
-      </v-btn>
-
-      <v-btn icon>
-        <v-icon>mdi-heart</v-icon>
-      </v-btn>
-
-      <v-btn icon>
-        <v-icon>mdi-dots-vertical</v-icon>
+      <v-btn color="primary" depressed v-if="isAuth" @click="logout">
+        Выйти
+        <v-icon>mdi-exit-to-app</v-icon>
       </v-btn>
     </v-app-bar>
 
@@ -139,6 +132,18 @@ export default {
         name: "grammar",
       },
       {
+        title: "Грамматика",
+        name: "grammarItem",
+      },
+      {
+        title: "Редактирование грамматики",
+        name: "grammarEditor",
+      },
+      {
+        title: "Создание новой лекции",
+        name: "grammarCreate",
+      },
+      {
         title: "Аудирование",
         name: "listening",
       },
@@ -154,6 +159,7 @@ export default {
   }),
   watch: {
     $route(to) {
+      console.log("TITLE - ", to.name);
       let path = this.menuPages.filter((item) => item.name === to.name)[0];
       this.title = path.title;
     },
@@ -165,7 +171,7 @@ export default {
     }),
   },
   methods: {
-    ...mapActions("auth", ["setFingerPrint"]),
+    ...mapActions("auth", ["setFingerPrint", "logout"]),
   },
   mounted() {
     this.setFingerPrint();

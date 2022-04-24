@@ -1,31 +1,78 @@
 <template>
-  <div>
-    <button @click="getUser">list of users</button>
-    <div v-for="user in users" :key="user.id">
-      <p>{{ user.email }} ---- {{ user.role }}</p>
-    </div>
+  <v-container class="fill-height" fluid>
+    <search-input @fetchTextData="fetchTextData" />
+    <div v-if="!listGrammars.length">Данных нет</div>
+    <grammar-list v-else :listGrammars="listGrammars" :user="user" />
+    <my-loader v-if="isGrammarLoading" />
 
-    <button @click="addUser">Добавить пользователя</button>
-  </div>
+    <v-btn
+      v-if="user.role === `ADMIN`"
+      color="pink"
+      dark
+      fixed
+      bottom
+      right
+      fab
+      @click="$router.push({ name: 'grammarCreate' })"
+    >
+      <v-icon>mdi-plus</v-icon>
+    </v-btn>
+
+    <div v-intersect="onIntersect" class="observer"></div>
+  </v-container>
 </template>
 
 <script>
+import MyLoader from "@/components/MyLoader";
+import SearchInput from "@/components/SearchInput";
+import GrammarList from "@/components/GrammarList";
 import { mapActions, mapState } from "vuex";
+
+//import GrammarList from "../components/GrammarList.vue";
+//import MyLoader from "../components/MyLoader.vue";
 export default {
+  components: { MyLoader, GrammarList, SearchInput },
+
   data() {
     return {
-      text: "",
+      searchInput: "",
     };
   },
   computed: {
     ...mapState("grammar", {
-      users: (state) => state.users,
+      listGrammars: (state) => state.listGrammars,
+      isGrammarLoading: (state) => state.isGrammarLoading,
+      totalPages: (state) => state.totalPages,
+      page: (state) => state.page,
+    }),
+
+    ...mapState("auth", {
+      user: (state) => state.user,
     }),
   },
   methods: {
-    ...mapActions("grammar", ["getUser", "addUser"]),
+    fetchTextData(searchText) {
+      this.searchInput = searchText;
+      this.fetchGrammar(this.searchInput);
+    },
+    ...mapActions("grammar", ["fetchGrammar", "loadMoreGrammar"]),
+    onIntersect(entries) {
+      if (entries[0].isIntersecting && this.page < this.totalPages) {
+        console.log("пересечение - ", entries[0].isIntersecting);
+        this.loadMoreGrammar(this.searchInput);
+      }
+    },
+  },
+  mounted() {
+    this.fetchGrammar(this.searchInput);
   },
 };
 </script>
 
-<style></style>
+<style>
+.observer {
+  width: 100%;
+  height: 30px;
+  background: green;
+}
+</style>
