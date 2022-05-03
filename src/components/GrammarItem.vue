@@ -1,11 +1,13 @@
 <template>
-  <div>
+  <v-container>
     <div v-if="grammarItem">
-      <h3>{{ grammarItem.title }}</h3>
-      <p>{{ grammarItem.description }}</p>
+      <div class="text-h3 font-weight-medium text-center">
+        {{ grammarItem.title }}
+      </div>
+      <div class="ql-editor" v-html="grammarItem.description"></div>
     </div>
     <my-loader v-if="isGrammarLoading" />
-  </div>
+  </v-container>
 </template>
 
 <script>

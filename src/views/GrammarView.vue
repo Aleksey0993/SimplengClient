@@ -1,7 +1,9 @@
 <template>
   <v-container class="fill-height" fluid>
     <search-input @fetchTextData="fetchTextData" />
-    <div v-if="!listGrammars.length">Данных нет</div>
+    <error-messages class="mx-auto my-0" v-if="!listGrammars.length"
+      >Список пуст</error-messages
+    >
     <grammar-list v-else :listGrammars="listGrammars" :user="user" />
     <my-loader v-if="isGrammarLoading" />
 
@@ -27,11 +29,11 @@ import MyLoader from "@/components/MyLoader";
 import SearchInput from "@/components/SearchInput";
 import GrammarList from "@/components/GrammarList";
 import { mapActions, mapState } from "vuex";
-
+import ErrorMessages from "../components/messages/ErrorMessages.vue";
 //import GrammarList from "../components/GrammarList.vue";
 //import MyLoader from "../components/MyLoader.vue";
 export default {
-  components: { MyLoader, GrammarList, SearchInput },
+  components: { MyLoader, GrammarList, SearchInput, ErrorMessages },
 
   data() {
     return {

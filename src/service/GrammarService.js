@@ -24,4 +24,10 @@ export default class GrammarService {
   static async update(title, description, published, id) {
     return $api.put(`/grammar/${id}`, { title, description, published });
   }
+  static async uploadImage(data) {
+    return $api.post(`/grammar/upload`, data);
+  }
+  static async deleteImage(fileName) {
+    return $api.post(`/grammar/imageDelete`, { fileName });
+  }
 }

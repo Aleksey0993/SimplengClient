@@ -10,6 +10,8 @@ const state = {
   listGrammars: [],
   grammarItem: null,
   isGrammarLoading: false,
+  err: "",
+  success: "",
 };
 const getters = {
   getByIdGrammar: (state) => (id) => {
@@ -33,6 +35,16 @@ const mutations = {
   },
   setGrammarItem(state, payload) {
     state.grammarItem = payload;
+  },
+  clearMessage(state) {
+    state.success = "";
+    state.err = "";
+  },
+  createGrammarSuccess(state, payload) {
+    state.success = payload;
+  },
+  createGrammarError(state, payload) {
+    state.err = payload;
   },
 };
 const actions = {
@@ -93,15 +105,15 @@ const actions = {
   async createGrammar({ commit }, newGrammar) {
     try {
       commit("setLoading", true);
-
-      console.log("newGrammar", newGrammar);
-      await GrammarService.create(
+      commit("clearMessage");
+      const response = await GrammarService.create(
         newGrammar.title,
         newGrammar.description,
         newGrammar.published
       );
-    } catch (e) {
-      console.log(e);
+      commit("createGrammarSuccess", response.data.msg);
+    } catch (err) {
+      commit("createGrammarError", err.response.data.msg);
     } finally {
       commit("setLoading", false);
     }
