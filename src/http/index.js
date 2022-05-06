@@ -34,7 +34,7 @@ $api.interceptors.response.use(
         const response = await $refreshRequest.post(`${API_URL}/auth/refresh`, {
           fingerprint: store.state.auth.fingerprint,
         });
-        console.log("successRespons", response);
+        // console.log("successRespons", response);
         localStorage.setItem("token", response.data.accessToken);
         return $api.request(originalRequest);
       } catch (err) {

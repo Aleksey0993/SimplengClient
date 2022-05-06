@@ -159,7 +159,6 @@ export default {
   }),
   watch: {
     $route(to) {
-      console.log("TITLE - ", to.name);
       let path = this.menuPages.filter((item) => item.name === to.name)[0];
       this.title = path.title;
     },

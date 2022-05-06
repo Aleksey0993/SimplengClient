@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import checkAuth from "./checkAuth";
+import checkAdmin from "./checkAdmin";
 //import store from '@/store/index'
 Vue.use(VueRouter);
 
@@ -139,11 +140,12 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  console.log("before checkAuth from -", from.name);
-  console.log("before checkAuth to- ", to.name);
+  // console.log("before checkAuth from -", from.name);
+  // console.log("before checkAuth to- ", to.name);
   checkAuth(to, from, next);
-  console.log("after checkAuth from - ", from.name);
-  console.log("after checkAuth to -", to.name);
+  checkAdmin(to, from, next);
+  //console.log("after checkAuth from - ", from.name);
+  // console.log("after checkAuth to -", to.name);
   // const protectedPages = [ 'register', 'login', 'activate', 'forgot', 'reset']
   // const authRequired = protectedPages.includes(to.name.toLowerCase())
   // // document.title = `${process.env.VUE_APP_TITLE} - ${to.meta.title}`
@@ -154,12 +156,12 @@ router.beforeEach((to, from, next) => {
   //  }
 });
 
-router.afterEach((to, from) => {
+router.afterEach((to) => {
   //const protectedPages = [ 'register', 'login', 'activate', 'forgot', 'reset']
   //const authRequired = protectedPages.includes(to.name.toLowerCase())
   //console.log('after' , to)
-  console.log("after from -", from.name);
-  console.log("after to - ", to.name);
+  // console.log("after from -", from.name);
+  // console.log("after to - ", to.name);
   document.title = `${process.env.VUE_APP_TITLE} - ${to.meta.title}`;
   //document.title = `${process.env.VUE_APP_TITLE} - ${to.meta.title}`
 });

@@ -94,8 +94,6 @@ export default {
   methods: {
     async handleImageAdded(file, Editor, cursorLocation, resetUploader) {
       try {
-        console.log("add image");
-        console.log("Editor111 - ", Editor);
         const formData = new FormData();
         formData.append("image", file);
         const response = await GrammarService.uploadImage(formData);
@@ -108,7 +106,7 @@ export default {
         //     Authorization: `Bearer ${localStorage.getItem("token")}`,
         //   },
         // });
-        console.log(response);
+
         let url = response.data.url; // Get url from response
         Editor.insertEmbed(cursorLocation, "image", url);
 
@@ -118,13 +116,11 @@ export default {
         console.log(error.response);
       }
     },
-    async handleImageRemoved(path, Editor, cursorLocation, resetUploader) {
+    async handleImageRemoved(path) {
       try {
         const url = new URL(path);
         let fileName = url.pathname.slice(1);
-        console.log("Editor", Editor);
-        console.log("cursorLocation", cursorLocation);
-        console.log("resetUploader", resetUploader);
+
         await GrammarService.deleteImage(fileName);
 
         // await axios({
@@ -154,11 +150,9 @@ export default {
   async mounted() {
     this.grammarItemEdit = await this.getByIdGrammar(this.$route.params.id);
     if (!this.grammarItemEdit) {
-      console.log("запрос при перезагрузки");
       await this.fetchGrammarItem(this.$route.params.id);
-      console.log("ответ после перезагрузки - ", this.grammarItem);
+
       this.grammarItemEdit = this.grammarItem;
-      console.log("получение ответа в переменную - ", this.grammarItemEdit);
     }
   },
 };

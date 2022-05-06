@@ -59,7 +59,7 @@ const actions = {
         state.size,
         searchText
       );
-      console.log("ответ от сервера - ", response);
+      // console.log("ответ от сервера - ", response);
       commit("setListGrammars", response.data);
     } catch (e) {
       console.log(e);
@@ -71,7 +71,7 @@ const actions = {
     try {
       commit("setLoading", true);
       const response = await GrammarService.getOne(id);
-      console.log("ответ от сервера - ", response);
+      // console.log("ответ от сервера - ", response);
       commit("setGrammarItem", response.data);
     } catch (e) {
       console.log(e);
@@ -82,16 +82,16 @@ const actions = {
 
   async loadMoreGrammar({ state, commit }, searchText) {
     try {
-      console.log("state.page before - ", state.page);
+      //  console.log("state.page before - ", state.page);
       commit("setPage", state.page + 1);
-      console.log("state.page after - ", state.page);
+      //  console.log("state.page after - ", state.page);
 
       const response = await GrammarService.getList(
         state.page,
         state.size,
         searchText
       );
-      console.log("response", response);
+      //  console.log("response", response);
       // commit(
       //   "setTotalPages",
       //   Math.ceil(response.headers["x-total-count"] / state.limit)
