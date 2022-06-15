@@ -24,10 +24,13 @@ export default class GrammarService {
   static async update(title, description, published, id) {
     return $api.put(`/grammar/${id}`, { title, description, published });
   }
+  static async delete(id) {
+    return $api.delete(`/grammar/${id}`);
+  }
   static async uploadImage(data) {
     return $api.post(`/grammar/upload`, data);
   }
   static async deleteImage(fileName) {
-    return $api.post(`/grammar/imageDelete`, { fileName });
+    return $api.post(`/grammar/file/imageDelete`, { fileName });
   }
 }

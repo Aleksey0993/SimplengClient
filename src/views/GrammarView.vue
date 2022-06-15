@@ -15,7 +15,7 @@
       bottom
       right
       fab
-      @click="$router.push({ name: 'grammarCreate' })"
+      @click="$router.push({ name: 'grammarNew' })"
     >
       <v-icon>mdi-plus</v-icon>
     </v-btn>

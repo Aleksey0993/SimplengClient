@@ -1,7 +1,7 @@
 import store from "@/store/index";
 
 export default (to, from, next) => {
-  const privateAdminPages = ["grammarEditor", "grammarCreate"];
+  const privateAdminPages = ["grammarEditor", "grammarNew"];
   const authAdmin = privateAdminPages.includes(to.name);
 
   if (authAdmin && store.state.auth.user.role == "USER") {

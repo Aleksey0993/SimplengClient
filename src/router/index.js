@@ -104,6 +104,38 @@ const routes = [
     },
   },
   {
+    path: "/grammarNew",
+    name: "grammarNew",
+    component: () => import("../components/GrammarNew.vue"),
+    meta: {
+      title: "Создание новой лекции",
+    },
+  },
+  {
+    path: "/listeningNew",
+    name: "listeningNew",
+    component: () => import("../components/ListeningNew.vue"),
+    meta: {
+      title: "Создание аудирование",
+    },
+  },
+  {
+    path: "/listeningEditor/:id",
+    name: "listeningEditor",
+    component: () => import("../components/ListeningEditor.vue"),
+    meta: {
+      title: "Редактирование грамматики",
+    },
+  },
+  {
+    path: "/listening/:id",
+    name: "listeningItem",
+    component: () => import("../components/ListeningItem.vue"),
+    meta: {
+      title: "Аудирование",
+    },
+  },
+  {
     path: "/listening",
     name: "listening",
     component: () => import("../views/ListeningView.vue"),

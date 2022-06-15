@@ -2,21 +2,34 @@
   <v-container>
     <v-divider></v-divider>
     <div class="d-flex justify-space-between align-center">
+      <v-btn
+        depressed
+        color="red"
+        @click="deleteGrammar(id)"
+        :disabled="isGrammarLoading"
+      >
+        Удалить
+      </v-btn>
       <v-switch v-model="preview" :label="`Preview`"></v-switch>
       <v-checkbox v-model="published" :label="`Опубликовать`"></v-checkbox>
       <v-btn
         depressed
         color="primary"
-        @click="saveGrammar"
+        @click="saveGrammar(true)"
         :disabled="isGrammarLoading"
       >
         Сохранить
       </v-btn>
     </div>
     <v-divider></v-divider>
+    <success-messages v-if="success" class="mt-3">{{
+      success
+    }}</success-messages>
 
+    <error-messages v-if="err" class="mt-3">{{ err }}</error-messages>
     <div v-if="grammarItemEdit">
       <v-text-field
+        class="mt-8"
         label="Название"
         outlined
         dense
@@ -24,7 +37,7 @@
       ></v-text-field>
 
       <vue-editor
-        v-show="title"
+        v-show="!preview"
         id="editor"
         v-model="content"
         use-custom-image-handler
@@ -42,18 +55,17 @@
 <script>
 import { VueEditor } from "vue2-editor";
 import GrammarService from "@/service/GrammarService";
-//import axios from "axios";
-//import { ImageDrop } from "quill-image-drop-module";
-//import ImageResize from "quill-image-resize-module";
+import SuccessMessages from "@/components/messages/SuccessMessages";
+import ErrorMessages from "@/components/messages/ErrorMessages";
 import MyLoader from "@/components/MyLoader";
-import { mapGetters, mapState, mapActions } from "vuex";
-//import GrammarService from "../service/GrammarService";
-//Quill.register("modules/imageDrop", ImageDrop);
-//Quill.register("modules/imageResize", ImageResize);
+import { mapGetters, mapState, mapActions, mapMutations } from "vuex";
+
 export default {
   components: {
     VueEditor,
     MyLoader,
+    SuccessMessages,
+    ErrorMessages,
   },
   data() {
     return {
@@ -63,16 +75,6 @@ export default {
       preview: false,
       grammarItemEdit: null,
       id: "",
-      // customModulesForEditor: [
-      //   { alias: "imageDrop", module: ImageDrop },
-      //   { alias: "imageResize", module: ImageResize },
-      // ],
-      // editorSettings: {
-      //   modules: {
-      //     imageDrop: true,
-      //     imageResize: {},
-      //   },
-      // },
     };
   },
   watch: {
@@ -88,6 +90,8 @@ export default {
     ...mapGetters("grammar", ["getByIdGrammar"]),
     ...mapState("grammar", {
       isGrammarLoading: (state) => state.isGrammarLoading,
+      err: (state) => state.err,
+      success: (state) => state.success,
       grammarItem: (state) => state.grammarItem,
     }),
   },
@@ -97,52 +101,38 @@ export default {
         const formData = new FormData();
         formData.append("image", file);
         const response = await GrammarService.uploadImage(formData);
-        // const response = await axios({
-        //   method: "post",
-        //   url: "http://localhost:5000/api/grammar/upload",
-        //   data: formData,
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //     Authorization: `Bearer ${localStorage.getItem("token")}`,
-        //   },
-        // });
-
         let url = response.data.url; // Get url from response
         Editor.insertEmbed(cursorLocation, "image", url);
-
         resetUploader();
-        this.saveGrammar();
+        this.saveGrammar(false);
       } catch (error) {
         console.log(error.response);
       }
     },
     async handleImageRemoved(path) {
       try {
+        console.log("удаление");
         const url = new URL(path);
         let fileName = url.pathname.slice(1);
 
         await GrammarService.deleteImage(fileName);
-
-        // await axios({
-        //   method: "post",
-        //   url: "http://localhost:5000/api/grammar/imageDelete",
-        //   data: { fileName: fileName },
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //     Authorization: `Bearer ${localStorage.getItem("token")}`,
-        //   },
-        // });
       } catch (error) {
         console.log(error);
       }
     },
-    ...mapActions("grammar", ["changeGrammar", "fetchGrammarItem"]),
-    saveGrammar() {
+    ...mapActions("grammar", [
+      "changeGrammar",
+      "fetchGrammarItem",
+      "deleteGrammar",
+    ]),
+    ...mapMutations("grammar", ["clearMessage"]),
+    saveGrammar(flag_img) {
       const newGrammar = {
         title: this.title,
         description: this.content,
         published: this.published,
         id: this.id,
+        flag_img: flag_img,
       };
       this.changeGrammar(newGrammar);
     },
@@ -154,6 +144,9 @@ export default {
 
       this.grammarItemEdit = this.grammarItem;
     }
+  },
+  beforeDestroy() {
+    this.clearMessage();
   },
 };
 </script>

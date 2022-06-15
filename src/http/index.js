@@ -46,6 +46,9 @@ $api.interceptors.response.use(
     if (error.response.status == 403) {
       router.replace({ name: "forbidden" });
     }
+    if (error.response.status == 404) {
+      router.replace({ name: "404" });
+    }
     throw error;
   }
 );

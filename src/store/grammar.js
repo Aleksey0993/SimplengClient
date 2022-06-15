@@ -12,6 +12,7 @@ const state = {
   isGrammarLoading: false,
   err: "",
   success: "",
+  id_newGrammar: 1,
 };
 const getters = {
   getByIdGrammar: (state) => (id) => {
@@ -33,6 +34,9 @@ const mutations = {
   setGrammars(state, payload) {
     state.listGrammars = payload;
   },
+  setIdGrammar(state, payload) {
+    state.id_newGrammar = payload;
+  },
   setGrammarItem(state, payload) {
     state.grammarItem = payload;
   },
@@ -44,6 +48,18 @@ const mutations = {
     state.success = payload;
   },
   createGrammarError(state, payload) {
+    state.err = payload;
+  },
+  deleteGrammarSuccess(state, payload) {
+    state.success = payload;
+  },
+  deleteGrammarError(state, payload) {
+    state.err = payload;
+  },
+  updateGrammarSuccess(state, payload) {
+    state.success = payload;
+  },
+  updateGrammarError(state, payload) {
     state.err = payload;
   },
 };
@@ -71,7 +87,7 @@ const actions = {
     try {
       commit("setLoading", true);
       const response = await GrammarService.getOne(id);
-      // console.log("ответ от сервера - ", response);
+      console.log("ответ от сервера - ", response);
       commit("setGrammarItem", response.data);
     } catch (e) {
       console.log(e);
@@ -112,24 +128,49 @@ const actions = {
         newGrammar.published
       );
       commit("createGrammarSuccess", response.data.msg);
+      commit("setIdGrammar", response.data.id);
     } catch (err) {
       commit("createGrammarError", err.response.data.msg);
     } finally {
       commit("setLoading", false);
     }
   },
-  async changeGrammar({ commit }, newGrammar) {
+  async deleteGrammar({ commit }, id) {
     try {
       commit("setLoading", true);
-
-      await GrammarService.update(
-        newGrammar.title,
-        newGrammar.description,
-        newGrammar.published,
-        newGrammar.id
-      );
-    } catch (e) {
-      console.log(e);
+      commit("clearMessage");
+      const response = await GrammarService.delete(id);
+      commit("deleteGrammarSuccess", response.data.msg);
+    } catch (err) {
+      commit("deleteGrammarError", err.response.data.msg);
+    } finally {
+      commit("setLoading", false);
+    }
+  },
+  async changeGrammar({ commit }, newGrammar) {
+    try {
+      console.log("добавление");
+      if (!newGrammar.flag_img) {
+        await GrammarService.update(
+          newGrammar.title,
+          newGrammar.description,
+          newGrammar.published,
+          newGrammar.id
+        );
+      } else {
+        // console.log("flag_img", newGrammar.flag_img);
+        commit("setLoading", true);
+        commit("clearMessage");
+        const response = await GrammarService.update(
+          newGrammar.title,
+          newGrammar.description,
+          newGrammar.published,
+          newGrammar.id
+        );
+        commit("updateGrammarSuccess", response.data.msg);
+      }
+    } catch (err) {
+      commit("updateGrammarError", err.response.data.msg);
     } finally {
       commit("setLoading", false);
     }

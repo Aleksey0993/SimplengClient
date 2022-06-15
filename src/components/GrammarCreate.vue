@@ -8,7 +8,7 @@
         depressed
         color="primary"
         @click="saveGrammar"
-        :disabled="isGrammarLoading"
+        :disabled="isGrammarLoading || !title.length"
       >
         Сохранить
       </v-btn>
@@ -26,7 +26,13 @@
       v-model.trim="title"
     ></v-text-field>
 
-    <vue-editor v-show="!preview" v-model="content"></vue-editor>
+    <vue-editor
+      v-show="!preview"
+      v-model="content"
+      use-custom-image-handler
+      @imageAdded="handleImageAdded"
+      @imageRemoved="handleImageRemoved"
+    ></vue-editor>
     <div v-show="preview" v-html="content"></div>
 
     <my-loader v-if="isGrammarLoading" />
@@ -39,7 +45,7 @@ import SuccessMessages from "@/components/messages/SuccessMessages";
 import ErrorMessages from "@/components/messages/ErrorMessages";
 import { VueEditor } from "vue2-editor";
 import { mapActions, mapState, mapMutations } from "vuex";
-
+import GrammarService from "@/service/GrammarService";
 export default {
   components: {
     VueEditor,
@@ -73,6 +79,30 @@ export default {
       };
       this.createGrammar(newGrammar);
     },
+    async handleImageAdded(file, Editor, cursorLocation, resetUploader) {
+      try {
+        const formData = new FormData();
+        formData.append("image", file);
+        const response = await GrammarService.uploadImage(formData);
+        let url = response.data.url; // Get url from response
+        Editor.insertEmbed(cursorLocation, "image", url);
+
+        resetUploader();
+        //  this.saveGrammar();
+      } catch (error) {
+        console.log(error.response);
+      }
+    },
+    async handleImageRemoved(path) {
+      try {
+        const url = new URL(path);
+        let fileName = url.pathname.slice(1);
+
+        await GrammarService.deleteImage(fileName);
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
   beforeDestroy() {
     this.clearMessage();
@@ -81,9 +111,13 @@ export default {
 </script>
 
 <style>
-iframe {
-  width: 80%;
-  height: 300px;
+button.ql-video {
+  display: none !important;
+}
+img {
+  width: 90%;
+  height: auto;
+  display: block;
   margin: 0 auto;
 }
 </style>

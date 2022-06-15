@@ -136,12 +136,28 @@ export default {
         name: "grammarItem",
       },
       {
+        title: "Аудирование",
+        name: "listeningItem",
+      },
+      {
+        title: "Редактирование аудирования",
+        name: "listeningEditor",
+      },
+      {
         title: "Редактирование грамматики",
         name: "grammarEditor",
       },
       {
         title: "Создание новой лекции",
         name: "grammarCreate",
+      },
+      {
+        title: "Новая тема",
+        name: "grammarNew",
+      },
+      {
+        title: "Добавление аудирования",
+        name: "listeningNew",
       },
       {
         title: "Аудирование",
